@@ -7,24 +7,29 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 
 const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
 
-export default function MapView({ postcards }) {
+export default function MapView({ postcards, zoomLevel, setZoomLevel }) {
   const layers = [
     new ArcLayer({
       id: 'arcs',
       data: postcards,
       getSourcePosition: d => [d.source.lng, d.source.lat],
       getTargetPosition: d => [d.target.lng, d.target.lat],
-      getSourceColor: [0, 255, 128, 140], // Neon Green Start
-      getTargetColor: [255, 0, 128, 140], // Pinkish Red End
-      getWidth: 1.5
+      getSourceColor: d => d.isAnomaly ? [255, 50, 50, 220] : [0, 255, 128, 140], 
+      getTargetColor: d => d.isAnomaly ? [255, 100, 0, 240] : [255, 0, 128, 140],
+      getWidth: d => d.isAnomaly ? 2.5 * zoomLevel : 1.2 * zoomLevel
     })
   ];
+
+  const onViewStateChange = ({ viewState }) => {
+    setZoomLevel(viewState.zoom);
+  };
 
   return (
     <div style={{ width: '100%', height: '100%' }}>
       <h3 className="map-title">Live Transit Network</h3>
       <DeckGL 
-        initialViewState={{ longitude: 15, latitude: 20, zoom: 1.2, pitch: 40 }} 
+        viewState={{ longitude: 15, latitude: 20, zoom: zoomLevel, pitch: 40 }} 
+        onViewStateChange={onViewStateChange} 
         controller={true} 
         layers={layers}
       >
