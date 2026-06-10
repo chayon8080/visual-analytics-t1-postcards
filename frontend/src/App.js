@@ -16,7 +16,7 @@ function App() {
   const [zoomLevel, setZoomLevel] = useState(1.2);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/postcards')
+    fetch('https://postcards-api.onrender.com/api/postcards')
       .then((res) => res.json())
       .then((data) => {
         setPostcards(data);
