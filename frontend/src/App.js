@@ -1,6 +1,9 @@
+// 
+
 import React, { useState, useEffect } from 'react';
 import ClusterView from './ClusterView';
 import MapView from './MapView';
+import logo from './logo.svg';
 import './App.css';
 
 function App() {
@@ -23,9 +26,18 @@ function App() {
     <div className="app-container">
       {/* M1 Section */}
       <div className="sidebar">
-        <h2>Postcard Dispatch Logs</h2>
+        {/* 2. Add the logo container right at the top */}
+
+<div className="brand-header" style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '20px' }}>
+  <img
+    src={logo}
+    alt="Postcrossing Analytics Logo"
+    style={{ width: '50px', height: 'auto', filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.1))' }}
+  />
+  <h2 style={{ margin: 0 }}>Postcard Dispatch Logs</h2>
+</div>
         <p className="sidebar-subtitle">Total Processed: {postcards.length}</p>
-        
+
         {postcards.slice(0, 50).map((pc, i) => (
           <div key={i} className="feed-card">
             <p className="route-title">{pc.source.country} ✈️ {pc.target.country}</p>
@@ -40,7 +52,7 @@ function App() {
         <div className="cluster-section">
           <ClusterView postcards={postcards} />
         </div>
-        
+
         {/* M3 Section */}
         <div className="map-section">
           <MapView postcards={postcards} />
