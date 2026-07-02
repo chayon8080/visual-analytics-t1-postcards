@@ -33,8 +33,8 @@ function App() {
 
     // Extract all distances, sort them to figure out what the top 5% longest routes look like
     const distances = postcards.map(pc => Number(pc.distance || 0)).sort((a, b) => a - b);
-    const thresholdIndex = Math.floor(distances.length * 0.95); 
-    
+    const thresholdIndex = Math.floor(distances.length * 0.95);
+
     // Fallback: if top 95% is 0, use a default threshold of 5000km
     const dynamicThreshold = distances[thresholdIndex] > 0 ? distances[thresholdIndex] : 5000;
 
@@ -49,9 +49,9 @@ function App() {
   const filteredPostcards = useMemo(() => {
     return enrichedPostcards.filter(pc => {
       const matchesCluster = selectedTopic ? pc.topic === selectedTopic : true;
-      
+
       const query = searchQuery.toLowerCase();
-      const matchesSearch = 
+      const matchesSearch =
         (pc.source?.country || '').toLowerCase().includes(query) ||
         (pc.target?.country || '').toLowerCase().includes(query) ||
         (pc.topic || '').toLowerCase().includes(query) ||
@@ -78,9 +78,9 @@ function App() {
 
         {/* 🔍 E1 Controller: Cross-View Search Input Box */}
         <div className="search-box-container" style={{ marginBottom: '15px' }}>
-          <input 
-            type="text" 
-            placeholder="Search country, topic, or ID..." 
+          <input
+            type="text"
+            placeholder="Search country, topic, or ID..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             style={{
@@ -98,8 +98,8 @@ function App() {
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px', alignItems: 'center' }}>
           <p className="sidebar-subtitle" style={{ margin: 0 }}>Active: {filteredPostcards.length}</p>
           {(selectedTopic || searchQuery) && (
-            <button 
-              className="clear-btn" 
+            <button
+              className="clear-btn"
               onClick={() => { setSelectedTopic(null); setSearchQuery(''); }}
             >
               Reset Filters
@@ -109,8 +109,8 @@ function App() {
 
         <div className="feed-scroll" style={{ overflowY: 'auto', maxHeight: '65vh' }}>
           {filteredPostcards.slice(0, 50).map((pc, i) => (
-            <div 
-              key={i} 
+            <div
+              key={i}
               className={`feed-card ${pc.isAnomaly ? 'outlier-alert-card' : ''}`}
               style={{ cursor: 'pointer', transition: 'transform 0.1s' }}
               onClick={() => setSearchQuery(pc.topic)}
@@ -123,27 +123,27 @@ function App() {
               <p className="route-details">ID: {pc.postcardId} • {pc.distance} km</p>
               <span className="topic-badge">{pc.topic}</span>
               <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    const path = pc.imageUrl;
-                    if(!path){
-                      setImageUrl('https://via.placeholder.com/600x400?text=No+Image');
-                      return;
-                    }
-                    setImageUrl(path);
-                  }}
-                  style={{
-                    padding: '4px 8px',
-                    fontSize: '11px',
-                    backgroundColor: '#007bef',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer'
-                  }}
-                >
-                  🖼️
-                </button>
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const path = pc.imageUrl;
+                  if (!path) {
+                    setImageUrl('https://via.placeholder.com/600x400?text=No+Image');
+                    return;
+                  }
+                  setImageUrl(path);
+                }}
+                style={{
+                  padding: '4px 8px',
+                  fontSize: '11px',
+                  backgroundColor: '#007bef',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer'
+                }}
+              >
+                🖼️
+              </button>
             </div>
           ))}
           {filteredPostcards.length === 0 && (
@@ -154,8 +154,8 @@ function App() {
 
       <div className="analytics-container">
         <div className="cluster-section">
-          <ClusterView 
-            postcards={enrichedPostcards} 
+          <ClusterView
+            postcards={enrichedPostcards}
             selectedTopic={selectedTopic}
             setSelectedTopic={setSelectedTopic}
             searchQuery={searchQuery}
@@ -164,15 +164,15 @@ function App() {
         </div>
 
         <div className="map-section">
-          <MapView 
-            postcards={filteredPostcards} 
+          <MapView
+            postcards={filteredPostcards}
             zoomLevel={zoomLevel}
             setZoomLevel={setZoomLevel}
           />
         </div>
       </div>
       {imageUrl && (
-        <div 
+        <div
           onClick={() => setImageUrl(null)}
           style={{
             position: 'fixed',
@@ -189,22 +189,23 @@ function App() {
           }}
         >
           <div style={{ position: 'relative', maxWidth: '85%', maxHeight: '85%' }}>
-            <img 
-              src={imageUrl} 
-              style={{ 
-                maxWidth: '100%', 
-                maxHeight: '80vh', 
+            <img
+              src={imageUrl}
+              alt="postcard"
+              style={{
+                maxWidth: '100%',
+                maxHeight: '80vh',
                 borderRadius: '8px',
                 boxShadow: '0 8px 30px rgba(0,0,0,0.5)',
                 cursor: 'default'
               }}
             />
-            <p style={{ 
-              color: '#aaa', 
-              textAlign: 'center', 
-              marginTop: '10px', 
+            <p style={{
+              color: '#aaa',
+              textAlign: 'center',
+              marginTop: '10px',
               fontFamily: 'sans-serif',
-              fontSize: '14px' 
+              fontSize: '14px'
             }}>
               Click somewhere to close
             </p>
