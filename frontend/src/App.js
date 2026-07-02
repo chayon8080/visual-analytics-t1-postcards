@@ -15,6 +15,8 @@ function App() {
   // --- E3: Shared Zoom State ---
   const [zoomLevel, setZoomLevel] = useState(1.2);
 
+  const [imageUrl, setImageUrl] = useState(null);
+
   useEffect(() => {
     fetch('https://postcards-api.onrender.com/api/postcards')
       .then((res) => res.json())
@@ -120,6 +122,28 @@ function App() {
               </p>
               <p className="route-details">ID: {pc.postcardId} • {pc.distance} km</p>
               <span className="topic-badge">{pc.topic}</span>
+              <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const path = pc.imageUrl;
+                    if(!path){
+                      setImageUrl('https://via.placeholder.com/600x400?text=No+Image');
+                      return;
+                    }
+                    setImageUrl(path);
+                  }}
+                  style={{
+                    padding: '4px 8px',
+                    fontSize: '11px',
+                    backgroundColor: '#007bef',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  🖼️
+                </button>
             </div>
           ))}
           {filteredPostcards.length === 0 && (
@@ -147,6 +171,46 @@ function App() {
           />
         </div>
       </div>
+      {imageUrl && (
+        <div 
+          onClick={() => setImageUrl(null)}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            backgroundColor: 'rgba(0, 0, 0, 0.85)',
+            zIndex: 9999,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            cursor: 'pointer'
+          }}
+        >
+          <div style={{ position: 'relative', maxWidth: '85%', maxHeight: '85%' }}>
+            <img 
+              src={imageUrl} 
+              style={{ 
+                maxWidth: '100%', 
+                maxHeight: '80vh', 
+                borderRadius: '8px',
+                boxShadow: '0 8px 30px rgba(0,0,0,0.5)',
+                cursor: 'default'
+              }}
+            />
+            <p style={{ 
+              color: '#aaa', 
+              textAlign: 'center', 
+              marginTop: '10px', 
+              fontFamily: 'sans-serif',
+              fontSize: '14px' 
+            }}>
+              Click somewhere to close
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
