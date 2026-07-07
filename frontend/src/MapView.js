@@ -4,6 +4,7 @@ import { ArcLayer } from '@deck.gl/layers';
 import Map from 'react-map-gl/maplibre';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import { getPostcardColor, hexToRgb } from '.';
 
 const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
 
@@ -63,7 +64,8 @@ export default function MapView({ postcards, zoomLevel, setZoomLevel }) {
           source: source,
           target: target,
           count: 0,
-          isAnomaly: false
+          isAnomaly: false,
+          clusterId: pc.clusterId
         };
       }
 
@@ -92,8 +94,8 @@ export default function MapView({ postcards, zoomLevel, setZoomLevel }) {
       data: filteredData,
       getSourcePosition: d => d.source,
       getTargetPosition: d => d.target,
-      getSourceColor: d => d.isAnomaly ? [255, 50, 50, 220] : [0, 255, 128, 140], 
-      getTargetColor: d => d.isAnomaly ? [255, 100, 0, 240] : [255, 0, 128, 140],
+      getSourceColor: d => hexToRgb(getPostcardColor(d)), 
+      getTargetColor: d => hexToRgb(getPostcardColor(d)),
       getWidth: d => d.isAnomaly ? 2.5 * viewState.zoom : 1.2 * viewState.zoom
     })
   ];
@@ -112,7 +114,7 @@ export default function MapView({ postcards, zoomLevel, setZoomLevel }) {
         fontFamily: 'sans-serif'
       }}>
         <div style={{ marginBottom: '10px' }}>
-          <label style={{ display: 'block', marginBottom: '5px' }}>Min. Postkarten: {minCount}</label>
+          <label style={{ display: 'block', marginBottom: '5px' }}>Min. Postcards: {minCount}</label>
           <input 
             type="range" 
             min="1" 

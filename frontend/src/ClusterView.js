@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { ScatterChart, Scatter, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { getPostcardColor } from '.';
 
 export default function ClusterView({ postcards, selectedTopic, setSelectedTopic, searchQuery, zoomLevel }) {
   const data = useMemo(() => {
@@ -14,8 +15,6 @@ export default function ClusterView({ postcards, selectedTopic, setSelectedTopic
       targetCountry: pc.target?.country || ''
     }));
   }, [postcards]);
-
-  const COLORS = ['#FF8042', '#00C49F', '#FFBB28', '#0088FE', '#FF66B2'];
 
   return (
     <div style={{ width: '100%', height: '100%' }}>
@@ -52,7 +51,7 @@ export default function ClusterView({ postcards, selectedTopic, setSelectedTopic
               const matchesCluster = selectedTopic ? entry.topic === selectedTopic : true;
               const isDimmed = !matchesSearch || !matchesCluster;
               
-              const cellColor = entry.isAnomaly ? '#e74c3c' : COLORS[entry.clusterId % COLORS.length];
+              const cellColor = getPostcardColor(entry);
 
               return (
                 <Cell 
